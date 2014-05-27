@@ -10,35 +10,64 @@
 
 <body>
 	<script>
-		
-		d3.csv("water.csv",function(data) {		
-		var cnvWidth = document.innerWidth;
-		var cnvHeight = document.innerHeight;
-	
-		
-	
-		var heightScale = d3.scale.linear()
-							.domain([1300,0])
-							.range([0,300]);
-	
-		var widthScale = d3.scale.linear()
-							//.domain([0,1300])
-							.range([0,1000]);
-	
-		var canvas = d3.select("body")
-					.append("svg")
-					.attr("width",1600)
-					.attr("height",900);
-		
-		var bars = canvas.selectAll("rect")
-					.data(data)
-					.enter()
-						.append("rect")
-						.attr("width",function(d) { return widthScale(d.JUNE_98)/1200;	})
-						.attr("height",function(d) { return  heightScale(100*(d.JUNE_98));	})
-						.attr("x",function(d,i) {	return i*12;	});
-						
+		var obj = {};
+
+function upload(path) {
+    d3.csv(path, function (data) {
+        data.forEach(function (v) {
+            var group = v.DISTRICT,
+                block = v.BLOCK,
+                villageObj = {};
+            if (!obj.hasOwnProperty(group)) {
+                obj[group] = {};
+            }
+            if (!obj[group].hasOwnProperty(block)) {
+                obj[group][block] = [];
+            }
+            villageObj = v;
+            delete(villageObj.DISTRICT);
+            delete(villageObj.BLOCK);
+            obj[group][block].push(villageObj);
+			});
 		});
+	}
+		
+
+function makeGraph(district,block) {
+        var cnvWidth = document.innerWidth;
+        var cnvHeight = document.innerHeight;
+		
+		var data = obj[district][block];
+		
+		var colorScale = d3.scale.linear()
+						.domain([1,300])
+						.range(["red","blue"]);
+
+        var heightScale = d3.scale.linear()
+            .domain([1300, 0])
+            .range([0, 300]);
+
+        var widthScale = d3.scale.linear()
+        .range([0, 1000]);
+
+        var canvas = d3.select("body")
+            .append("svg")
+            .attr("width", 1600)
+            .attr("height", 900);
+
+        var bars = canvas.selectAll("rect")
+            .data(data)
+            .enter()
+				.append("rect")
+				.attr("width", 10)
+				.attr("height", function (d) {
+					return heightScale(100 * (d.JUNE_98));
+					})
+				.attr("x", function (d, i) {
+					return i * 12;
+					});
+
+    }
 	</script>
 </body>
 </html>
