@@ -28,46 +28,65 @@ function upload(path) {
             delete(villageObj.DISTRICT);
             delete(villageObj.BLOCK);
             obj[group][block].push(villageObj);
-			});
-		});
-	}
-		
+        });
+    });
+}
 
-function makeGraph(district,block) {
-        var cnvWidth = document.innerWidth;
-        var cnvHeight = document.innerHeight;
-		
-		var data = obj[district][block];
-		
-		var colorScale = d3.scale.linear()
-						.domain([1,300])
-						.range(["red","blue"]);
 
-        var heightScale = d3.scale.linear()
-            .domain([1300, 0])
-            .range([0, 300]);
+function makeGraph(district, block, from, to) {
+    var cnvWidth = document.innerWidth;
+    var cnvHeight = document.innerHeight;
 
-        var widthScale = d3.scale.linear()
+    var data = obj[district][block];
+    var parsingObj = {};
+    data.forEach(function (v) {
+        var group = v.VILLAGE,
+            villageObj = {};
+        if (!parsingObj.hasOwnProperty(group)) {
+            parsingObj[group] = [];
+            parsingObj[group].PRE = [];
+            parsingObj[group].POST = [];
+        }
+        villageObj = v;
+        for (var i = from; i <= to; i++) {
+            var preval = "JUNE_" + i,
+                postval = "OCT_" + i;
+            parsingObj[group].PRE[i - from] = v[preval];
+            parsingObj[group].POST[i - from] = v[postval];
+        }
+    });
+
+
+
+    var colorScale = d3.scale.linear()
+        .domain([1, 300])
+        .range(["red", "blue"]);
+
+    var heightScale = d3.scale.linear()
+        .domain([1300, 0])
+        .range([0, 300]);
+
+    var widthScale = d3.scale.linear()
         .range([0, 1000]);
 
-        var canvas = d3.select("body")
-            .append("svg")
-            .attr("width", 1600)
-            .attr("height", 900);
+    var canvas = d3.select("body")
+        .append("svg")
+        .attr("width", 1600)
+        .attr("height", 900);
 
-        var bars = canvas.selectAll("rect")
-            .data(data)
-            .enter()
-				.append("rect")
-				.attr("width", 10)
-				.attr("height", function (d) {
-					return heightScale(100 * (d.JUNE_98));
-					})
-				.attr("x", function (d, i) {
-					return i * 12;
-					});
+    var bars = canvas.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("width", 10)
+        .attr("height", function (d) {
+        return heightScale(100 * (d.JUNE_98));
+    })
+        .attr("x", function (d, i) {
+        return i * 12;
+    });
 
-    }
+}
 	</script>
 </body>
 </html>
