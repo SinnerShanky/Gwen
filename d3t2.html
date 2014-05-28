@@ -38,7 +38,7 @@ function makeGraph(district, block, from, to) {
     var cnvHeight = document.innerHeight;
 
     var data = obj[district][block];
-    var parsingObj = {};
+    var parsingObj = [];
     data.forEach(function (v) {
         var group = v.VILLAGE,
             villageObj = {};
@@ -57,7 +57,10 @@ function makeGraph(district, block, from, to) {
     });
 
 //PARSE DATA AS:  for(a in parsingObj) {console.log(parsingObj[a].PRE[0])}
-
+	var numberVillages=0;
+	
+	
+	
     var colorScale = d3.scale.linear()
         .domain([1, 300])
         .range(["red", "blue"]);
@@ -73,19 +76,43 @@ function makeGraph(district, block, from, to) {
         .append("svg")
         .attr("width", 1600)
         .attr("height", 900);
-
+	
+	
+	var i=0,
+	data = [];
+	
+	
+	for (village in parsingObj)
+		if (village!=="")
+			data.push(parsingObj[village].PRE[i]);
+	
+	
+	
     var bars = canvas.selectAll("rect")
         .data(data)
         .enter()
-        .append("rect")
-        .attr("width", 10)
-        .attr("height", function (d) {
-        return heightScale(100 * (d.JUNE_98));
+			.append("rect")
+			.attr("width", 10)
+			.attr("height", function (d) {
+			return heightScale(10 * d);
     })
         .attr("x", function (d, i) {
         return i * 12;
     });
-
+	
+	
+	var animFunc=function()
+		{
+			i+=1;
+			var temp=0;
+			for (village in parsingObj)
+				if (village!=="")
+					data[temp++]=parsingObj[village].PRE[i];
+			bars.transition()
+				.attr("height",function(d,i) {	return 10*data[i];	})
+				.attr("fill",function(d) {	return colorScale(d); });
+		}
+	setInterval(animFunc,1000);
 }
 	</script>
 </body>
