@@ -11,7 +11,7 @@
 <body>
 	<script>
 		var obj = {};
-
+		
 function upload(path) {
     d3.csv(path, function (data) {
         data.forEach(function (v) {
@@ -34,6 +34,7 @@ function upload(path) {
 
 
 function makeGraph(district, block, from, to) {
+
     var cnvWidth = document.innerWidth;
     var cnvHeight = document.innerHeight;
 
@@ -57,48 +58,62 @@ function makeGraph(district, block, from, to) {
     });
 
 //PARSE DATA AS:  for(a in parsingObj) {console.log(parsingObj[a].PRE[0])}
+
 	var numberVillages=0;
-	
-	
-	
-    var colorScale = d3.scale.linear()
-        .domain([1, 300])
-        .range(["red", "blue"]);
 
-    var heightScale = d3.scale.linear()
-        .domain([1300, 0])
-        .range([0, 300]);
+    var heightScale = 10;
+	var widthScale = 40;
 
-    var widthScale = d3.scale.linear()
-        .range([0, 1000]);
+//AXIS PREPARATION
+	
+	var axisScale = d3.scale.linear()
+					.domain([130,0])
+					.range([300, 0]);
+	
+	var Yaxis = d3.svg.axis()
+				.scale(axisScale)
+				.orient("right");
 
+//MAKE CANVAS AND ADD AXIS
+				
     var canvas = d3.select("body")
         .append("svg")
         .attr("width", 1600)
-        .attr("height", 900);
+        .attr("height", 900)
+		.call(Yaxis)
+		.append("g")
+		.attr("transform","translate(50,0)");
 	
+//GENERATE DATA FOR BARS
 	
 	var i=0,
 	data = [];
 	
-	
 	for (village in parsingObj)
 		if (village!=="")
 			data.push(parsingObj[village].PRE[i]);
-	
-	
-	
-    var bars = canvas.selectAll("rect")
+
+//GENERATE LINES	
+
+	/*var bars = canvas.selectAll("rect")
         .data(data)
         .enter()
 			.append("rect")
 			.attr("width", 10)
-			.attr("height", function (d) {
-			return heightScale(10 * d);
-    })
-        .attr("x", function (d, i) {
-        return i * 12;
-    });
+			.attr("height", function (d) {	return 10*data[i];	})
+			.attr("x", function (d, i) {	return i * 12;	})
+			.attr("fill","#90c6ee");*/
+
+	var graph = canvas.selectAll("line")
+				.data(data)
+				.enter()
+					.append("line")
+					.attr("x1",function(d,i)	{	return (widthScale * i/2);	})
+					.attr("y1",function(d)	{	return heightScale*(data[i]);	})
+					.attr("x2",function(d,i)	{	return (widthScale * (i+1)/2);	})
+					.attr("y2",function(d)	{	return heightScale*(data[i]);	})
+					.attr("stroke","#90c6ee")
+					.attr("stroke-width",3);
 	
 	var total=to-from+1;
 	var animFunc=function()
@@ -108,12 +123,36 @@ function makeGraph(district, block, from, to) {
 			for (village in parsingObj)
 				if (village!=="")
 					data[temp++]=parsingObj[village].PRE[i];
-			bars.transition()
+			
+			/*bars.transition()
 				.attr("height",function(d,i) {	return 10*data[i];	})
-				.attr("fill",function(d) {	return colorScale(d); });
+				.attr("fill","#90c6ee");*/
+				
+			graph.transition()
+				.attr("y1",function(d,i)	{	return heightScale*(data[i]);	})
+				.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
+				.attr("stroke","#90c6ee")
+				.attr("stroke-width",1);
 		}
-	setInterval(animFunc,1000);
-}
+		
+//GENERATE GUIDES
+
+	var guides = canvas;
+
+	for(i=0;i<13;i++)
+	{
+		canvas.append("line")
+			.attr("x1",0)
+			.attr("y1",function()	{	return 30/13*i*heightScale;	})
+			.attr("x2",300)
+			.attr("y2",function()	{	return 30/13*i*heightScale;	})
+			.attr("stroke","#d1d1d1")
+			.attr("stroke-width",1);
+	}	
+	
+	setInterval(animFunc,800);
+	}
+	
 	</script>
 </body>
 </html>

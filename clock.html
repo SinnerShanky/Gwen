@@ -1,0 +1,54 @@
+<html>
+<head>
+	<title>
+		Clock Code
+	</title>
+	<script src = "d3.v3.min.js"></script>
+</head>
+
+<body>
+
+	<script>
+		var canvas = d3.select("body")
+						.append("svg")
+						.attr("width",300)
+						.attr("height",300)
+						.append("g")
+							.attr("transform","translate(10,10)");
+		
+		var i = 0;
+		var r = 40;
+		
+		function makeLine()
+		{
+			
+			d3.select("line")
+			.remove();
+			
+			var circle = canvas.append("circle")
+							.attr("cx",r)
+							.attr("cy",r)
+							.attr("r",r)
+							.attr("fill","white")
+							.attr("stroke","black")
+							.attr("stroke-width",3);
+			
+			var line = canvas.append("line")
+						.attr("x1",function()	{	var x = r + r*Math.sin(i);
+													return x;	})
+						.attr("y1",function()	{	var y = r - r*Math.cos(i);
+													return y;	})
+						.attr("x2",r)
+						.attr("y2",r)
+						.attr("stroke-width",2)
+						.attr("stroke","black");
+						
+			
+			i+=0.1;
+		}
+		
+		setInterval(makeLine,10);
+	</script>
+
+</body>
+</html>
