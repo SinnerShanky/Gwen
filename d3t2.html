@@ -100,10 +100,10 @@ function makeGraph(district, block, from, to) {
         return i * 12;
     });
 	
-	
+	var total=to-from+1;
 	var animFunc=function()
 		{
-			i+=1;
+			i=(i+1)%total;
 			var temp=0;
 			for (village in parsingObj)
 				if (village!=="")
