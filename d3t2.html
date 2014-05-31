@@ -93,7 +93,7 @@ function makeGraph(district, block, from, to) {
 		if (village!=="")
 			data.push(parsingObj[village].PRE[i]);
 
-//GENERATE LINES	
+//GENERATE LINE GRAPH	
 
 	/*var bars = canvas.selectAll("rect")
         .data(data)
@@ -109,9 +109,9 @@ function makeGraph(district, block, from, to) {
 				.enter()
 					.append("line")
 					.attr("x1",function(d,i)	{	return (widthScale * i/2);	})
-					.attr("y1",function(d)	{	return heightScale*(data[i]);	})
+					.attr("y1",function(d,i)	{	return heightScale*(data[i]);	})
 					.attr("x2",function(d,i)	{	return (widthScale * (i+1)/2);	})
-					.attr("y2",function(d)	{	return heightScale*(data[i]);	})
+					.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
 					.attr("stroke","#90c6ee")
 					.attr("stroke-width",3);
 	
@@ -133,6 +133,9 @@ function makeGraph(district, block, from, to) {
 				.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
 				.attr("stroke","#90c6ee")
 				.attr("stroke-width",1);
+				
+			dataPoints.transition()
+				.attr("cy",function(d,i)	{	return heightScale*(data[i]);	});
 		}
 		
 //GENERATE GUIDES
@@ -140,7 +143,6 @@ function makeGraph(district, block, from, to) {
 	var guides = canvas;
 
 	for(i=0;i<13;i++)
-	{
 		canvas.append("line")
 			.attr("x1",0)
 			.attr("y1",function()	{	return 30/13*i*heightScale;	})
@@ -148,10 +150,20 @@ function makeGraph(district, block, from, to) {
 			.attr("y2",function()	{	return 30/13*i*heightScale;	})
 			.attr("stroke","#d1d1d1")
 			.attr("stroke-width",1);
-	}	
 	
-	setInterval(animFunc,800);
-	}
+//GENERATE DATA POINT INDICATORS	
+
+		var dataPoints = canvas.selectAll("circle")
+						.data(data)
+						.enter()
+							.append("circle")
+							.attr("cx",function(d,i)	{	return (widthScale * i/2);	})
+							.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
+							.attr("r",3);
+	
+	
+	setInterval(animFunc,1000);
+}
 	
 	</script>
 </body>
