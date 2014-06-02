@@ -20,6 +20,7 @@ function upload(path) {
     });
 }
 
+upload('../data/water.csv');
 
 function makeGraph(district, block, from, to) {
 
@@ -49,8 +50,11 @@ function makeGraph(district, block, from, to) {
 
 	var numberVillages=0;
 
+//DATA READY. GRAPH GENERATION
+
   var heightScale = 10;
-	var widthScale = 40;
+	var widthScale = 40;	//General width of the graph is controlled by this.
+	var offset = 40;	//Distance from left, where graph starts.
 
 //AXIS PREPARATION
 	
@@ -68,11 +72,11 @@ function makeGraph(district, block, from, to) {
         .append("svg")
         .attr("width", 500)
         .attr("height", 500)
-		.call(Yaxis)
-		.append("g")
-		.attr("transform","translate(50,0)");
+				.attr("transform","translate(0,5)")
+				.call(Yaxis)
+				.append("g");
 	
-//GENERATE DATA FOR BARS
+//GENERATE DATA
 	
 	var i=0,
 	data = [];
@@ -81,24 +85,15 @@ function makeGraph(district, block, from, to) {
 		if (village!=="")
 			data.push(parsingObj[village].PRE[i]);
 
-//GENERATE LINE GRAPH	
-
-	/*var bars = canvas.selectAll("rect")
-        .data(data)
-        .enter()
-			.append("rect")
-			.attr("width", 10)
-			.attr("height", function (d) {	return 10*data[i];	})
-			.attr("x", function (d, i) {	return i * 12;	})
-			.attr("fill","#90c6ee");*/
+//DRAW LINE GRAPH	
 
 	var graph = canvas.selectAll("line")
 				.data(data)
 				.enter()
 					.append("line")
-					.attr("x1",function(d,i)	{	return (widthScale * i/2);	})
+					.attr("x1",function(d,i)	{	return (widthScale * i/2 + offset);	})
 					.attr("y1",function(d,i)	{	return heightScale*(data[i]);	})
-					.attr("x2",function(d,i)	{	return (widthScale * (i+1)/2);	})
+					.attr("x2",function(d,i)	{	return (widthScale * (i+1)/2 + offset);	})
 					.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
 					.attr("stroke","#90c6ee")
 					.attr("stroke-width",3);
@@ -109,12 +104,17 @@ function makeGraph(district, block, from, to) {
 			i=(i+1)%total;
 			var temp=0;
 			for (village in parsingObj)
+			{
 				if (village!=="")
+				{
 					data[temp++]=parsingObj[village].PRE[i];
-			
-			/*bars.transition()
-				.attr("height",function(d,i) {	return 10*data[i];	})
-				.attr("fill","#90c6ee");*/
+					canvas.select("text")
+						.remove();
+					canvas.append("text")
+						.text(function()	{	return from+i;	})
+						.attr("transform","translate(300,350)");
+				}
+			}
 				
 			graph.transition()
 				.attr("y1",function(d,i)	{	return heightScale*(data[i]);	})
@@ -133,9 +133,9 @@ function makeGraph(district, block, from, to) {
 
 	for(i=0;i<13;i++)
 		canvas.append("line")
-			.attr("x1",0)
+			.attr("x1",30)
 			.attr("y1",function()	{	return 30/13*i*heightScale;	})
-			.attr("x2",300)
+			.attr("x2",1000)
 			.attr("y2",function()	{	return 30/13*i*heightScale;	})
 			.attr("stroke","#d1d1d1")
 			.attr("stroke-width",1);
@@ -150,7 +150,7 @@ function makeGraph(district, block, from, to) {
 										.data(data)
 										.enter()
 											.append("circle")
-											.attr("cx",function(d,i)	{	return (widthScale * i/2);	})
+											.attr("cx",function(d,i)	{	return (widthScale * i/2 + offset);	})
 											.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
 											.attr("r",3)
 											.attr("fill",function(d)	{	return colorScale(data[i]);	});
@@ -158,4 +158,3 @@ function makeGraph(district, block, from, to) {
 	
 	setInterval(animFunc,1000);
 }
-	

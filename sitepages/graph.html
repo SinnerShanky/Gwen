@@ -13,13 +13,33 @@
 
 <body>
 
-	<div class="ui button" onclick="upload('../data/water.csv')">
-  	Upload
+	<div class="ui form">
+		<div class="field">
+				<label>DISTRICT</label>
+				<input type = "text" id="tb_district">
+			<div class="field">
+				<label>BLOCK</label>
+				<input type = "text" id="tb_block">
+		</div>
+		<!--<div class="ui button" onclick="upload('../data/water.csv')">
+  		Upload
+		</div>-->
+		<div class="ui button" onclick="callFunc()">
+  		Plot Graph
+		</div>
 	</div>
 
-	<div class="ui button" onclick="makeGraph('AMRITSAR','AJNALA',1991,2011)">
-  	Plot Graph
-	</div>
+
+	
+	<script>
+			var callFunc = function() {
+				var district = document.getElementById('tb_district').value.toUpperCase();
+				var block = document.getElementById('tb_block').value.toUpperCase();
+				if(district !== "" && block !== "")
+					makeGraph(district,block,1998,2011);
+			}
+	</script>
+	
   <br><br><br>
 	
 </body>

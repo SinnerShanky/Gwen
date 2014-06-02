@@ -1,0 +1,7 @@
+dropdown menu
+year
+Axis labels
+shift canvas
+Display district, block
+village names
+all blocks
