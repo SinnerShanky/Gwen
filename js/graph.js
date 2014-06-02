@@ -22,7 +22,8 @@ function upload(path) {
 
 upload('../data/water.csv');
 
-function makeGraph(district, block, from, to) {
+function makeGraph(district, block, from, to)
+{
 
     var cnvWidth = document.innerWidth;
     var cnvHeight = document.innerHeight;
@@ -47,9 +48,6 @@ function makeGraph(district, block, from, to) {
     });
 
 //PARSE DATA AS:  for(a in parsingObj) {console.log(parsingObj[a].PRE[0])}
-
-	var numberVillages=0;
-
 //DATA READY. GRAPH GENERATION
 
   var heightScale = 10;
@@ -67,8 +65,10 @@ function makeGraph(district, block, from, to) {
 				.orient("right");
 
 //MAKE CANVAS AND ADD AXIS
-				
-    var canvas = d3.select("body")
+
+	d3.selectAll("svg").remove();
+
+  var canvas = d3.select("body")
         .append("svg")
         .attr("width", 500)
         .attr("height", 500)
@@ -97,22 +97,43 @@ function makeGraph(district, block, from, to) {
 					.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
 					.attr("stroke","#90c6ee")
 					.attr("stroke-width",3);
-	
+
+//DISPLAY DISTRICT,BLOCK
+		canvas.select("l_district")
+			.remove();
+
+		canvas.select("l_block")
+			.remove();
+
+		canvas.append("text")
+			.text(function(){	return "DISTRICT: " + document.getElementById("tb_district").value.toUpperCase();	})
+			.attr("transform","translate(0,350)")
+			.attr("id","l_district");
+
+		canvas.append("text")
+			.text(function(){	return "BLOCK: " + document.getElementById("tb_block").value.toUpperCase();	})
+			.attr("transform","translate(200,350)")
+			.attr("id","l_block");
+
+//ANIMATION FUNCTION
+
 	var total=to-from+1;
 	var animFunc=function()
-		{
+	{
 			i=(i+1)%total;
 			var temp=0;
+
+			canvas.selectAll("l_year")
+				.append("text")
+				.attr("id","l_year")
+				.attr("transform","translate(300,330)")
+				.text(function()	{	return from+i;	});
+
 			for (village in parsingObj)
 			{
 				if (village!=="")
 				{
 					data[temp++]=parsingObj[village].PRE[i];
-					canvas.select("text")
-						.remove();
-					canvas.append("text")
-						.text(function()	{	return from+i;	})
-						.attr("transform","translate(300,350)");
 				}
 			}
 				
@@ -120,16 +141,16 @@ function makeGraph(district, block, from, to) {
 				.attr("y1",function(d,i)	{	return heightScale*(data[i]);	})
 				.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
 				.attr("stroke","#90c6ee")
-				.attr("stroke-width",1);
+				.attr("stroke-width",3);
 				
 			dataPoints.transition()
-				.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
-				.attr("fill",function(d)	{	return colorScale(data[i]);	});
-		}
+				.attr("cy",function(d,i)	{	return heightScale*(data[i]);	});
+
+			vert_guides.transition()
+				.attr("y2",function(d,i)	{	return heightScale*(data[i]);	})
+	}
 		
 //GENERATE GUIDES
-
-	var guides = canvas;
 
 	for(i=0;i<13;i++)
 		canvas.append("line")
@@ -139,12 +160,20 @@ function makeGraph(district, block, from, to) {
 			.attr("y2",function()	{	return 30/13*i*heightScale;	})
 			.attr("stroke","#d1d1d1")
 			.attr("stroke-width",1);
+
+	var vert_guides = canvas.selectAll("vert_guides")
+										.data(data)
+										.enter()
+											.append("line")
+											.attr("x1", function(d,i)	{	return (widthScale * i/2 + offset);	})
+											.attr("y1",	0)
+											.attr("x2", function(d,i)	{	return (widthScale * i/2 + offset);	})
+											.attr("y2", function(d,i)	{	return heightScale*(data[i]);	})
+											.attr("stroke","#e1e1e1")
+											.attr("stroke-width",1)
+											.attr("id","vert_guides");
 	
 //GENERATE DATA POINT INDICATORS	
-
-	var colorScale = d3.scale.linear()
-										.domain([0,130])
-										.range(["#0000ff","#ff0000"]);
 
 	var dataPoints = canvas.selectAll("circle")
 										.data(data)
@@ -152,9 +181,8 @@ function makeGraph(district, block, from, to) {
 											.append("circle")
 											.attr("cx",function(d,i)	{	return (widthScale * i/2 + offset);	})
 											.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
-											.attr("r",3)
-											.attr("fill",function(d)	{	return colorScale(data[i]);	});
-	
-	
+											.attr("r",5)
+											.attr("fill","#ff0000");
+
 	setInterval(animFunc,1000);
-}
+	}
