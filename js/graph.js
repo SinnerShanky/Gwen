@@ -1,16 +1,4 @@
-<html>
-<head>
-	<title>
-		Test 1
-	</title>
-	
-	<script src="d3.v3.min.js">
-	</script>
-</head>
-
-<body>
-	<script>
-		var obj = {};
+var obj = {};
 		
 function upload(path) {
     d3.csv(path, function (data) {
@@ -61,7 +49,7 @@ function makeGraph(district, block, from, to) {
 
 	var numberVillages=0;
 
-    var heightScale = 10;
+  var heightScale = 10;
 	var widthScale = 40;
 
 //AXIS PREPARATION
@@ -78,8 +66,8 @@ function makeGraph(district, block, from, to) {
 				
     var canvas = d3.select("body")
         .append("svg")
-        .attr("width", 1600)
-        .attr("height", 900)
+        .attr("width", 500)
+        .attr("height", 500)
 		.call(Yaxis)
 		.append("g")
 		.attr("transform","translate(50,0)");
@@ -135,7 +123,8 @@ function makeGraph(district, block, from, to) {
 				.attr("stroke-width",1);
 				
 			dataPoints.transition()
-				.attr("cy",function(d,i)	{	return heightScale*(data[i]);	});
+				.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
+				.attr("fill",function(d)	{	return colorScale(data[i]);	});
 		}
 		
 //GENERATE GUIDES
@@ -153,18 +142,20 @@ function makeGraph(district, block, from, to) {
 	
 //GENERATE DATA POINT INDICATORS	
 
-		var dataPoints = canvas.selectAll("circle")
-						.data(data)
-						.enter()
-							.append("circle")
-							.attr("cx",function(d,i)	{	return (widthScale * i/2);	})
-							.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
-							.attr("r",3);
+	var colorScale = d3.scale.linear()
+										.domain([0,130])
+										.range(["#0000ff","#ff0000"]);
+
+	var dataPoints = canvas.selectAll("circle")
+										.data(data)
+										.enter()
+											.append("circle")
+											.attr("cx",function(d,i)	{	return (widthScale * i/2);	})
+											.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
+											.attr("r",3)
+											.attr("fill",function(d)	{	return colorScale(data[i]);	});
 	
 	
 	setInterval(animFunc,1000);
 }
 	
-	</script>
-</body>
-</html>
