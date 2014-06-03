@@ -1,4 +1,5 @@
-var obj = {};
+var obj = {},
+	  happening=0;
 		
 function upload(path) {
     d3.csv(path, function (data) {
@@ -27,7 +28,7 @@ function makeGraph(district, block, from, to)
 
     var cnvWidth = document.innerWidth;
     var cnvHeight = document.innerHeight;
-
+    var numVillages = 0;
     var data = obj[district][block];
     var parsingObj = [];
     data.forEach(function (v) {
@@ -37,6 +38,8 @@ function makeGraph(district, block, from, to)
             parsingObj[group] = [];
             parsingObj[group].PRE = [];
             parsingObj[group].POST = [];
+            numVillages+=1;
+            //console.log(numVillages);
         }
         villageObj = v;
         for (var i = from; i <= to; i++) {
@@ -51,7 +54,7 @@ function makeGraph(district, block, from, to)
 //DATA READY. GRAPH GENERATION
 
   var heightScale = 10;
-	var widthScale = 40;	//General width of the graph is controlled by this.
+	var widthScale = (500/numVillages)*1.5;	//General width of the graph is controlled by this.
 	var offset = 40;	//Distance from left, where graph starts.
 
 //AXIS PREPARATION
@@ -87,6 +90,8 @@ function makeGraph(district, block, from, to)
 
 //DRAW LINE GRAPH	
 
+	canvas.select('lineg').remove();
+
 	var graph = canvas.selectAll("line")
 				.data(data)
 				.enter()
@@ -96,24 +101,14 @@ function makeGraph(district, block, from, to)
 					.attr("x2",function(d,i)	{	return (widthScale * (i+1)/2 + offset);	})
 					.attr("y2",function(d,i)	{	return heightScale*(data[i+1]);	})
 					.attr("stroke","#90c6ee")
-					.attr("stroke-width",3);
+					.attr("stroke-width",3)
+					.attr("id","lineg");
 
 //DISPLAY DISTRICT,BLOCK
-		canvas.select("l_district")
-			.remove();
 
-		canvas.select("l_block")
-			.remove();
-
-		canvas.append("text")
-			.text(function(){	return "DISTRICT: " + document.getElementById("tb_district").value.toUpperCase();	})
-			.attr("transform","translate(0,350)")
-			.attr("id","l_district");
-
-		canvas.append("text")
-			.text(function(){	return "BLOCK: " + document.getElementById("tb_block").value.toUpperCase();	})
-			.attr("transform","translate(200,350)")
-			.attr("id","l_block");
+	document.getElementById("l_district").innerHTML = ('DISTRICT: ' + document.getElementById("tb_district").value.toUpperCase());
+	document.getElementById("l_block").innerHTML = ('BLOCK: ' + document.getElementById("tb_block").value.toUpperCase());
+	document.getElementById("text_year").innerHTML = ('YEAR: '+ from);
 
 //ANIMATION FUNCTION
 
@@ -123,7 +118,7 @@ function makeGraph(district, block, from, to)
 			i=(i+1)%total;
 			var temp=0;
 
-			document.getElementById("text_year").innerHTML = ('Year: '+(from+i));
+			document.getElementById("text_year").innerHTML = ('YEAR: '+(from+i));
 
 			for (village in parsingObj)
 			{
@@ -179,6 +174,9 @@ function makeGraph(district, block, from, to)
 											.attr("cy",function(d,i)	{	return heightScale*(data[i]);	})
 											.attr("r",5)
 											.attr("fill","#ff0000");
-
-	setInterval(animFunc,1000);
-	}
+	happening = setInterval(animFunc,1000);
+}
+function callAnimation(temp) {
+	if(temp == false)
+		clearInterval(happening);
+}

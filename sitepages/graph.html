@@ -8,7 +8,20 @@
 	<script src="../js/d3.v3.min.js" charset="utf-8"></script>
 	<script src="../js/graph.js" charset="utf-8"></script>
 	<link rel="stylesheet" class = "ui" href="../css/semantic.css" />
-
+	<script>
+	var district = "",
+			block = "",
+		  callFunc = function() {
+				var field1 = document.getElementById('tb_district').value.toUpperCase();
+				var field2 = document.getElementById('tb_block').value.toUpperCase();
+				if(field1 !== "" && field2 !== "" && (district!=field1 || block!=field2)) {
+					district = field1;
+					block = field2;
+					callAnimation(false);
+					makeGraph(district,block,1998,2011);
+				}
+			}
+	</script>
 </head>
 
 <body>
@@ -27,26 +40,19 @@
 		<div class="ui button" onclick="callFunc()">
   		Plot Graph
 		</div>
-		<br>
 		<div>
-			<label id="text_year">
-				Year: 
-			</label>
+		<br>
+  		<label id="l_district"></label>
+	  	<br>
+	  	<label id="l_block"></label>
+	  	<br>
+			<label id="text_year"></label>
 		</div>
 	</div>
 
+  
 
-	
-	<script>
-			var callFunc = function() {
-				var district = document.getElementById('tb_district').value.toUpperCase();
-				var block = document.getElementById('tb_block').value.toUpperCase();
-				if(district !== "" && block !== "")
-					makeGraph(district,block,1998,2011);
-			}
-	</script>
-	
-  <br><br><br>
+  <br>
 	
 </body>
 

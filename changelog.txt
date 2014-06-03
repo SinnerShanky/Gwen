@@ -1,7 +1,2 @@
-Incorporated Semantic UI Kit
-Added District, Block Text Fields
-Added District, Block labels
-Shifted canvas for better fit
-Borderless iframe
-Thicker Line graph
-Larger Data Point Indicators
+Handles multiple graph queries
+Rectified display of data
