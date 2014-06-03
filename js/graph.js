@@ -123,11 +123,7 @@ function makeGraph(district, block, from, to)
 			i=(i+1)%total;
 			var temp=0;
 
-			canvas.selectAll("l_year")
-				.append("text")
-				.attr("id","l_year")
-				.attr("transform","translate(300,330)")
-				.text(function()	{	return from+i;	});
+			document.getElementById("text_year").innerHTML = ('Year: '+(from+i));
 
 			for (village in parsingObj)
 			{
