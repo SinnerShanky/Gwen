@@ -1,5 +1,2 @@
-dropdown menu
-Axis labels
-village names
+Axis labels (village names)
 all blocks
-year

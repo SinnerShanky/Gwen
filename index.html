@@ -1,20 +1,59 @@
+<!DOCTYPE html>
+
 <html>
 	<head>
 		<title>
-			SA
+			Water Level Simulator
 		</title>
 
-		<script src="../js/d3.v3.min.js" charset="utf-8"></script>
-		<script src="../js/graph.js" charset="utf-8"></script>
-		<link rel="stylesheet" href="css/style.css" />
+		<script src = "js/d3.v3.min.js"></script>
+		<script src = "js/graph.js"></script>
+		<script src = "js/jquery.min.js"></script>
+		<script>
+		upload('data/water.csv');
+		console.log("UPLOADED BITCH.");
+		var district = "",
+				block = "",
+			  callFunc = function() {
+					var field1 = document.getElementById('dd_district').value.toUpperCase();
+					var field2 = document.getElementById('dd_block').value.toUpperCase();
+					if(field1 !== "" && field2 !== "" && (district!=field1 || block!=field2)) {
+						district = field1;
+						block = field2;
+						callAnimation(false);
+						makeGraph(district,block,1998,2011);
+					}
+				}
+		</script>
+
+		<link rel = "stylesheet" href = "css/style.css">
 
 	</head>
 
 	<body>
-	
-		<iframe src = "sitepages/graph.html">
-			Your browser does not support the awesomeness that this Web App is. Please update to experience.
-		</iframe>
 
+	<label>Select District: </label>
+	<select id = "dd_district" onchange="populateBlock()" width = "50px">
+		<option selected = "true">----SELECT----</option>
+	</select>
+	<br><br>
+	<label>Select Block: </label>
+	<select id = "dd_block" width = "50px">
+		<option >---Select district first---</option>
+	</select>
+
+
+		<br><br>
+		<input type="button" onclick="callFunc()" value = "Plot Graph">
+		<div>
+		<br>
+  		<label id="l_district"></label>
+	  	<br>
+	  	<label id="l_block"></label>
+	  	<br>
+			<label id="text_year"></label>
+		</div>
+  <br>
+</div>
 	</body>
 </html>

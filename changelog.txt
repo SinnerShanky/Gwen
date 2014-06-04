@@ -1,2 +1,5 @@
-Handles multiple graph queries
-Rectified display of data
+Removed useless frame
+Added Year indicator
+Removed useless Semantic UI (Thank God!)
+Added dropdown menus (Not as easy as it sounds)
+Refactored code
