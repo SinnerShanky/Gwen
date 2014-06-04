@@ -224,7 +224,4 @@ function makeGraph(district, block, from, to) {
 function callAnimation(temp) {
     if (temp === false) clearInterval(happening);
 }
-
-console.log("NIGGA FUNCTIONS DONE");
 populateDistrict();
-console.log("POPULATED BITCH");
