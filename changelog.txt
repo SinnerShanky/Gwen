@@ -1,5 +1,4 @@
-Removed useless frame
-Added Year indicator
-Removed useless Semantic UI (Thank God!)
-Added dropdown menus (Not as easy as it sounds)
+Added Pre-Post options
+Added from and to year options
 Refactored code
+Various improvements and fixes.

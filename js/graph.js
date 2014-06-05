@@ -1,11 +1,51 @@
 var obj = {},
-		happening = 0;
+    happening = 0,
+    fromYear = 99999,
+    toYear = 0;
+
+function populateYear() {
+    //Populating the year dropdowns
+    var pushYear1,
+        pushYear2;
+    for(var i = fromYear; i<=toYear; i++) {
+        pushYear1 = document.createElement("option");
+        pushYear1.value = i;
+        pushYear1.text = i;
+        pushYear2 = document.createElement("option");
+        pushYear2.value = i;
+        pushYear2.text = i;
+        document.getElementById('dd_from').add(pushYear1);
+        document.getElementById('dd_to').add(pushYear2);
+    }
+}
+
+function calculateYear() {
+    //Finding the from and to Year in the given DATA
+    for (var dist in obj ) {
+        for (var bloc in obj[dist]) {
+            var tempData = obj[dist][bloc][0];
+            for (var str in tempData) {
+                var yr = parseInt(str.substring(str.length-4,str.length),10);
+                if(!isNaN(yr)) {
+                    if(yr < fromYear)
+                        fromYear = yr;
+                    if (yr > toYear)
+                        toYear = yr;
+                }
+            }
+            break;
+        }
+        break;
+    }
+    populateYear();
+}
+
 
 function populateDistrict(district) {
     var dist_ele = document.createElement("option");
     dist_ele.value = district;
     dist_ele.text = district;
-    document.getElementById("dd_district").add(dist_ele);
+    document.getElementById('dd_district').add(dist_ele);
 }
 
 
@@ -40,9 +80,10 @@ function upload(path) {
         });
     });
 }
+
 //DATA READY
 
-function makeGraph(district, block, from, to) {
+function makeGraph(district, block, from, to, dataType) {
     var numVillages = 0;
     var parsingData = obj[district][block];
     var parsingObj = [];
@@ -100,10 +141,14 @@ function makeGraph(district, block, from, to) {
     var i = 0,
         data = [];
 
-    for (var village in parsingObj)
-    if (village !== "") data.push(parsingObj[village].PRE[i]);
-
-    //DRAW LINE GRAPH	
+    if (dataType === "PRE") {
+        for (var village in parsingObj)
+        if (village !== "") data.push(parsingObj[village].PRE[i]);
+    } else {
+        for (var village in parsingObj)
+        if (village !== "") data.push(parsingObj[village].POST[i]);
+    }
+    //DRAW LINE GRAPH   
 
     canvas.select('lineg').remove();
 
@@ -121,10 +166,8 @@ function makeGraph(district, block, from, to) {
         return (widthScale * (i + 1) / 2 + offset);
     })
         .attr("y2", function (d, i) {
-        if( data[i+1] !== NaN && data[i+1] !== undefined )
-            return heightScale * (data[i + 1]);
-        else
-            return 0;
+        if (!isNaN(data[i+1]) && data[i + 1] !== undefined) return heightScale * (data[i + 1]);
+        else return 0;
     })
         .attr("stroke", "#90c6ee")
         .attr("stroke-width", 3)
@@ -138,31 +181,37 @@ function makeGraph(district, block, from, to) {
 
     //ANIMATION FUNCTION
 
-    var total = to - from + 1;
+    var total = to - from + 1,
+        yearIndex = 0;
+    
     var animFunc = function () {
-        i = (i + 1) % total;
+        yearIndex = (yearIndex + 1) % total;
         var temp = 0;
 
-        document.getElementById("text_year").innerHTML = ('YEAR: ' + (from + i));
+        document.getElementById("text_year").innerHTML = ('YEAR: ' + (from + yearIndex));
 
-        for (var village in parsingObj) {
-            if (village !== "") {
-                if( parsingObj[village].PRE[i] !== NaN && parsingObj[village].PRE[i] !== undefined )
-                    data[temp++] = parsingObj[village].PRE[i];
-                else
-                    data[temp++] = 0;
+        if (dataType === "PRE") {
+            for (var village in parsingObj) {
+                if (village !== "") {
+                    if (!isNaN(parsingObj[village].PRE[yearIndex]) && parsingObj[village].PRE[yearIndex] !== undefined) data[temp++] = parsingObj[village].PRE[yearIndex];
+                    else data[temp++] = 0;
+                }
+            }
+        } else {
+            for (var village in parsingObj) {
+                if (village !== "") {
+                    if (!isNaN(parsingObj[village].POST[yearIndex]) && parsingObj[village].POST[yearIndex] !== undefined) data[temp++] = parsingObj[village].POST[yearIndex];
+                    else data[temp++] = 0;
+                }
             }
         }
-
         graph.transition()
             .attr("y1", function (d, i) {
             return heightScale * (data[i]);
         })
             .attr("y2", function (d, i) {
-                if( data[i+1] !== NaN && data[i+1] !== undefined )
-                    return heightScale * (data[i + 1]);
-                else
-                    return 0;
+            if (!isNaN(data[i+1]) && data[i + 1] !== undefined) return heightScale * (data[i + 1]);
+            else return 0;
         })
             .attr("stroke", "#90c6ee")
             .attr("stroke-width", 3);
@@ -210,7 +259,7 @@ function makeGraph(district, block, from, to) {
         .attr("stroke-width", 1)
         .attr("id", "vert_guides");
 
-    //GENERATE DATA POINT INDICATORS	
+    //GENERATE DATA POINT INDICATORS    
 
     var dataPoints = canvas.selectAll("circle")
         .data(data)
@@ -230,4 +279,3 @@ function makeGraph(district, block, from, to) {
 function callAnimation(temp) {
     if (temp === false) clearInterval(happening);
 }
-populateDistrict();
