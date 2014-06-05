@@ -1,2 +1,5 @@
 Axis labels (village names)
 all blocks
+Pause button
+Pre + Post
+Year range
