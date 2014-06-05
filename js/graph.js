@@ -10,7 +10,6 @@ function populateDistrict(district) {
 
 
 function populateBlock() {
-    //$('#dd_block').empty();
     var district = document.getElementById('dd_district').value;
     document.getElementById("dd_block").innerHTML = "";
     for (var block in obj[district]) {
@@ -55,7 +54,6 @@ function makeGraph(district, block, from, to) {
             parsingObj[group].PRE = [];
             parsingObj[group].POST = [];
             numVillages += 1;
-            //console.log(numVillages);
         }
         villageObj = v;
         for (var i = from; i <= to; i++) {
@@ -69,7 +67,6 @@ function makeGraph(district, block, from, to) {
     var cnvWidth = document.innerWidth;
     var cnvHeight = document.innerHeight;
 
-    //PARSE DATA AS:  for(a in parsingObj) {console.log(parsingObj[a].PRE[0])}
     //GRAPH GENERATION
 
     var heightScale = 10;
@@ -80,7 +77,7 @@ function makeGraph(district, block, from, to) {
 
     var axisScale = d3.scale.linear()
         .domain([130, 0])
-        .range([300, 0]);
+        .range([0, 300]);
 
     var Yaxis = d3.svg.axis()
         .scale(axisScale)
@@ -118,13 +115,16 @@ function makeGraph(district, block, from, to) {
         return (widthScale * i / 2 + offset);
     })
         .attr("y1", function (d, i) {
-        return heightScale * (data[i]);
+        return 300-heightScale * (data[i]);
     })
         .attr("x2", function (d, i) {
         return (widthScale * (i + 1) / 2 + offset);
     })
         .attr("y2", function (d, i) {
-        return heightScale * (data[i + 1]);
+        if( data[i+1] !== NaN && data[i+1] !== undefined )
+            return 300-heightScale * (data[i + 1]);
+        else
+            return 300;
     })
         .attr("stroke", "#90c6ee")
         .attr("stroke-width", 3)
@@ -147,28 +147,34 @@ function makeGraph(district, block, from, to) {
 
         for (var village in parsingObj) {
             if (village !== "") {
-                data[temp++] = parsingObj[village].PRE[i];
+                if( parsingObj[village].PRE[i] !== NaN && parsingObj[village].PRE[i] !== undefined )
+                    data[temp++] = parsingObj[village].PRE[i];
+                else
+                    data[temp++] = 0;
             }
         }
 
         graph.transition()
             .attr("y1", function (d, i) {
-            return heightScale * (data[i]);
+            return 300-heightScale * (data[i]);
         })
             .attr("y2", function (d, i) {
-            return heightScale * (data[i + 1]);
+                if( data[i+1] !== NaN && data[i+1] !== undefined )
+                    return 300-heightScale * (data[i + 1]);
+                else
+                    return 300;
         })
             .attr("stroke", "#90c6ee")
             .attr("stroke-width", 3);
 
         dataPoints.transition()
             .attr("cy", function (d, i) {
-            return heightScale * (data[i]);
+            return 300-heightScale * (data[i]);
         });
 
         vert_guides.transition()
             .attr("y2", function (d, i) {
-            return heightScale * (data[i]);
+            return 300-heightScale * (data[i]);
         });
     };
     var heightScaleFunction = function (i) {
@@ -193,12 +199,12 @@ function makeGraph(district, block, from, to) {
         .attr("x1", function (d, i) {
         return (widthScale * i / 2 + offset);
     })
-        .attr("y1", 0)
+        .attr("y1", 300)
         .attr("x2", function (d, i) {
         return (widthScale * i / 2 + offset);
     })
         .attr("y2", function (d, i) {
-        return heightScale * (data[i]);
+        return 300-heightScale * (data[i]);
     })
         .attr("stroke", "#e1e1e1")
         .attr("stroke-width", 1)
@@ -214,7 +220,7 @@ function makeGraph(district, block, from, to) {
         return (widthScale * i / 2 + offset);
     })
         .attr("cy", function (d, i) {
-        return heightScale * (data[i]);
+        return 300-heightScale * (data[i]);
     })
         .attr("r", 5)
         .attr("fill", "#ff0000");
