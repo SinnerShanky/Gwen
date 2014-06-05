@@ -3,3 +3,21 @@ iframe{
 	height: 800;
 	border: 0;
 }
+
+.button{
+	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+	font-size:30px;
+	padding:5px;
+  background-color: #dcdcdc;
+  border: 1px;
+  border-style: solid;
+  border-color: #e1e1e1;
+  border-radius: 10px;
+  color:#000;
+  text-decoration:none;
+}
+
+.label{
+	font-family: "Avant Garde", Avantgarde, "Century Gothic", CenturyGothic, "AppleGothic", sans-serif;
+	font-size:20px;
+}

@@ -77,7 +77,7 @@ function makeGraph(district, block, from, to) {
 
     var axisScale = d3.scale.linear()
         .domain([130, 0])
-        .range([0, 300]);
+        .range([300, 0]);
 
     var Yaxis = d3.svg.axis()
         .scale(axisScale)
@@ -115,16 +115,16 @@ function makeGraph(district, block, from, to) {
         return (widthScale * i / 2 + offset);
     })
         .attr("y1", function (d, i) {
-        return 300-heightScale * (data[i]);
+        return heightScale * (data[i]);
     })
         .attr("x2", function (d, i) {
         return (widthScale * (i + 1) / 2 + offset);
     })
         .attr("y2", function (d, i) {
         if( data[i+1] !== NaN && data[i+1] !== undefined )
-            return 300-heightScale * (data[i + 1]);
+            return heightScale * (data[i + 1]);
         else
-            return 300;
+            return 0;
     })
         .attr("stroke", "#90c6ee")
         .attr("stroke-width", 3)
@@ -156,25 +156,25 @@ function makeGraph(district, block, from, to) {
 
         graph.transition()
             .attr("y1", function (d, i) {
-            return 300-heightScale * (data[i]);
+            return heightScale * (data[i]);
         })
             .attr("y2", function (d, i) {
                 if( data[i+1] !== NaN && data[i+1] !== undefined )
-                    return 300-heightScale * (data[i + 1]);
+                    return heightScale * (data[i + 1]);
                 else
-                    return 300;
+                    return 0;
         })
             .attr("stroke", "#90c6ee")
             .attr("stroke-width", 3);
 
         dataPoints.transition()
             .attr("cy", function (d, i) {
-            return 300-heightScale * (data[i]);
+            return heightScale * (data[i]);
         });
 
         vert_guides.transition()
             .attr("y2", function (d, i) {
-            return 300-heightScale * (data[i]);
+            return heightScale * (data[i]);
         });
     };
     var heightScaleFunction = function (i) {
@@ -204,7 +204,7 @@ function makeGraph(district, block, from, to) {
         return (widthScale * i / 2 + offset);
     })
         .attr("y2", function (d, i) {
-        return 300-heightScale * (data[i]);
+        return heightScale * (data[i]);
     })
         .attr("stroke", "#e1e1e1")
         .attr("stroke-width", 1)
@@ -220,7 +220,7 @@ function makeGraph(district, block, from, to) {
         return (widthScale * i / 2 + offset);
     })
         .attr("cy", function (d, i) {
-        return 300-heightScale * (data[i]);
+        return heightScale * (data[i]);
     })
         .attr("r", 5)
         .attr("fill", "#ff0000");
