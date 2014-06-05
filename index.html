@@ -7,8 +7,8 @@
 		</title>
 
 		<script src = "js/d3.v3.min.js"></script>
-		<script src = "js/graph.js"></script>
 		<script src = "js/jquery.min.js"></script>
+		<script src = "js/graph.js"></script>
 		<script>
 		upload('data/water.csv');
 		var district = "",
@@ -31,26 +31,26 @@
 
 	<body>
 
-	<label>Select District: </label>
+	<label class="label">Select District: </label>
 	<select id = "dd_district" onchange="populateBlock()" width = "50px">
 		<option selected = "true">----SELECT----</option>
 	</select>
 	<br><br>
-	<label>Select Block: </label>
+	<label class="label">Select Block: </label>
 	<select id = "dd_block" width = "50px">
-		<option >---Select district first---</option>
+		<option>---Select district first---</option>
 	</select>
 
 
 		<br><br>
-		<input type="button" onclick="callFunc()" value = "Plot Graph">
+		<a type="submit" onclick="callFunc()" value = "Plot Graph" class = "button" align="center" id="plot">Plot Graph</a>
 		<div>
 		<br>
-  		<label id="l_district"></label>
+  		<label id="l_district" class="label"></label>
 	  	<br>
-	  	<label id="l_block"></label>
+	  	<label id="l_block" class="label"></label>
 	  	<br>
-			<label id="text_year"></label>
+			<label id="text_year" class="label"></label>
 		</div>
   <br>
 </div>
