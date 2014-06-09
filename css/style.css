@@ -47,14 +47,3 @@
 	stroke-width: 3;
 	shape-rendering: crispEdges;
 }
-
-img{
-	height: 30px;
-	width: 30px;
-	padding: 5px;
-}
-
-#playbtn{
-	display: none;
-	float: middle;
-}
