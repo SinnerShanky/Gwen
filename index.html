@@ -15,6 +15,7 @@
 			dataType="",
 			from = 0,
 			to = 0,
+			paused = true,
 			yearFunc = function() { 
 					calculateYear(); 
 				},
@@ -30,10 +31,19 @@
 						dataType = field3;
 						from = field4;
 						to = field5;
-						callAnimation(false);
+						resetYearIndex();
+						setGraphYear(from,to);
+						callAnimation(!paused);
 						makeGraph(district, block, from, to, dataType);
 					}
 				};
+
+		function intervalSetter()
+		{
+    		paused=!paused;
+    		callAnimation(paused);
+		}
+
 		upload('data/water.csv');
 		</script>
 
@@ -71,6 +81,7 @@
 
 		<br><br><br>
 		<a type="submit" onclick="callFunc()" value = "Plot Graph" class = "button" align="center" id="plot">Plot Graph</a>
+		<a type="submit" onclick="intervalSetter()" value = "Play/Pause" class = "button" align="center" id="plot">Pause</a>
 		<div>
 		<br>
   		<label id="l_district" class="label"></label>

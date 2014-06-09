@@ -1,7 +1,12 @@
 var obj = {},
     happening = 0,
     fromYear = 99999,
-    toYear = 0;
+    toYear = 0,
+    graphFromYear = 0,
+    graphToYear = 0,
+    pauseYear=0,
+    yearIndex = 0,
+    total;
 
 function populateYear() {
     //Populating the year dropdowns
@@ -40,14 +45,12 @@ function calculateYear() {
     populateYear();
 }
 
-
 function populateDistrict(district) {
     var dist_ele = document.createElement("option");
     dist_ele.value = district;
     dist_ele.text = district;
     document.getElementById('dd_district').add(dist_ele);
 }
-
 
 function populateBlock() {
     var district = document.getElementById('dd_district').value;
@@ -138,15 +141,17 @@ function makeGraph(district, block, from, to, dataType) {
 
     //GENERATE DATA
 
-    var i = 0,
-        data = [];
+    var data = [];
 
+    total = to - from + 1;
+    //yearIndex = (yearIndex + 1) % total;
+ 
     if (dataType === "PRE") {
         for (var village in parsingObj)
-        if (village !== "") data.push(parsingObj[village].PRE[i]);
+        if (village !== "") data.push(parsingObj[village].PRE[yearIndex]);
     } else {
         for (var village in parsingObj)
-        if (village !== "") data.push(parsingObj[village].POST[i]);
+        if (village !== "") data.push(parsingObj[village].POST[yearIndex]);
     }
     //DRAW LINE GRAPH   
 
@@ -177,13 +182,10 @@ function makeGraph(district, block, from, to, dataType) {
 
     document.getElementById("l_district").innerHTML = ('DISTRICT: ' + document.getElementById("dd_district").value.toUpperCase());
     document.getElementById("l_block").innerHTML = ('BLOCK: ' + document.getElementById("dd_block").value.toUpperCase());
-    document.getElementById("text_year").innerHTML = ('YEAR: ' + from);
+    document.getElementById("text_year").innerHTML = ('YEAR: ' + (from + yearIndex));
 
     //ANIMATION FUNCTION
 
-    var total = to - from + 1,
-        yearIndex = 0;
-    
     var animFunc = function () {
         yearIndex = (yearIndex + 1) % total;
         var temp = 0;
@@ -193,18 +195,23 @@ function makeGraph(district, block, from, to, dataType) {
         if (dataType === "PRE") {
             for (var village in parsingObj) {
                 if (village !== "") {
-                    if (!isNaN(parsingObj[village].PRE[yearIndex]) && parsingObj[village].PRE[yearIndex] !== undefined) data[temp++] = parsingObj[village].PRE[yearIndex];
-                    else data[temp++] = 0;
+                    if (!isNaN(parsingObj[village].PRE[yearIndex]) && parsingObj[village].PRE[yearIndex] !== undefined)
+                        data[temp++] = parsingObj[village].PRE[yearIndex];
+                    else
+                        data[temp++] = 0;
                 }
             }
         } else {
             for (var village in parsingObj) {
                 if (village !== "") {
-                    if (!isNaN(parsingObj[village].POST[yearIndex]) && parsingObj[village].POST[yearIndex] !== undefined) data[temp++] = parsingObj[village].POST[yearIndex];
-                    else data[temp++] = 0;
+                    if (!isNaN(parsingObj[village].POST[yearIndex]) && parsingObj[village].POST[yearIndex] !== undefined)
+                        data[temp++] = parsingObj[village].POST[yearIndex];
+                    else
+                        data[temp++] = 0;
                 }
             }
         }
+
         graph.transition()
             .attr("y1", function (d, i) {
             return heightScale * (data[i]);
@@ -226,6 +233,7 @@ function makeGraph(district, block, from, to, dataType) {
             return heightScale * (data[i]);
         });
     };
+
     var heightScaleFunction = function (i) {
         return (30 / 13 * i * heightScale);
     };
@@ -276,6 +284,18 @@ function makeGraph(district, block, from, to, dataType) {
     happening = setInterval(animFunc, 1000);
 }
 
+function setGraphYear(fromVal, toVal) {
+    graphFromYear = fromVal;
+    graphToYear = toVal;
+}
+
+function resetYearIndex() {
+    yearIndex = 0;
+}
+
 function callAnimation(temp) {
-    if (temp === false) clearInterval(happening);
+    if (temp === false)
+        clearInterval(happening);
+    else
+        makeGraph(district, block, graphFromYear, graphToYear, dataType);
 }
