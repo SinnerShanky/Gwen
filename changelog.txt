@@ -1,4 +1,4 @@
-Added Pre-Post options
-Added from and to year options
-Refactored code
-Various improvements and fixes.
+Added Play/Pause
+Added axis labels
+Improved axis visibility
+Changed height scale

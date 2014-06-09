@@ -41,6 +41,7 @@
 		function intervalSetter()
 		{
     		paused=!paused;
+    		document.getElementById('play').innerHTML = paused ? "Pause":"Play";
     		callAnimation(paused);
 		}
 
@@ -81,7 +82,7 @@
 
 		<br><br><br>
 		<a type="submit" onclick="callFunc()" value = "Plot Graph" class = "button" align="center" id="plot">Plot Graph</a>
-		<a type="submit" onclick="intervalSetter()" value = "Play/Pause" class = "button" align="center" id="plot">Pause</a>
+		<a type="submit" onclick="intervalSetter()" value = "Play/Pause" class = "button" align="center" id="play">Pause</a>
 		<div>
 		<br>
   		<label id="l_district" class="label"></label>

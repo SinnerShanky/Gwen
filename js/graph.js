@@ -113,31 +113,9 @@ function makeGraph(district, block, from, to, dataType) {
 
     //GRAPH GENERATION
 
-    var heightScale = 10;
+    var heightScale = 300/26;
     var widthScale = (500 / numVillages) * 1.5; //General width of the graph is controlled by this.
     var offset = 40; //Distance from left, where graph starts.
-
-    //AXIS PREPARATION
-
-    var axisScale = d3.scale.linear()
-        .domain([130, 0])
-        .range([300, 0]);
-
-    var Yaxis = d3.svg.axis()
-        .scale(axisScale)
-        .orient("right");
-
-    //MAKE CANVAS AND ADD AXIS
-
-    d3.selectAll("svg").remove();
-
-    var canvas = d3.select("body")
-        .append("svg")
-        .attr("width", 500)
-        .attr("height", 500)
-        .attr("transform", "translate(0,5)")
-        .call(Yaxis)
-        .append("g");
 
     //GENERATE DATA
 
@@ -153,11 +131,76 @@ function makeGraph(district, block, from, to, dataType) {
         for (var village in parsingObj)
         if (village !== "") data.push(parsingObj[village].POST[yearIndex]);
     }
+
+    //MAKE CANVAS AND ADD AXIS
+
+    d3.selectAll("svg").remove();
+
+    var canvas = d3.select("body")
+        .append("svg")
+        .attr("width", 500)
+        .attr("height", 600)
+        .attr("transform", "translate(50,20)");
+
+    var villageNames = [];
+
+    for(village in parsingObj)
+        villageNames.push(village);
+
+    var villageTicks = function(d) {
+        return villageNames[d%numVillages];
+    }
+        
+    var xAxisScale = d3.scale.linear()
+                        .domain([0,numVillages])
+                        .range([0,(widthScale*numVillages)/2]);
+
+    var xAxis = d3.svg.axis()
+                .scale(xAxisScale)
+                .orient("bottom")
+                .ticks(numVillages)
+                .tickFormat(villageTicks);
+
+    canvas.append("g")
+        .attr("class","x axis")
+        .call(xAxis)
+        .attr("transform","translate(0,300)");
+    
+    canvas.selectAll("text")
+            .attr("y","40")
+            .attr("style","text-anchor:end; font-size: 14px")
+            .attr("text-align","right")
+            .attr("transform","rotate(-65)");
+
+    var depthNames = [];
+
+    for(i=0;i<=14;i++)
+        depthNames.push( parseInt (300/15 * i,10));
+
+    var depthTicks = function(d) {
+        console.log(d);
+        return (depthNames[d/10]/10);
+    }
+
+    var yAxisScale = d3.scale.linear()
+        .domain([130, 0])
+        .range([300, 0]);
+
+    var yAxis = d3.svg.axis()
+        .scale(yAxisScale)
+        .orient("right")
+        .ticks(15)
+        .tickFormat(depthTicks); 
+
+    canvas.append("svg:g")
+        .attr("class","y axis")
+        .call(yAxis);
+
     //DRAW LINE GRAPH   
 
-    canvas.select('lineg').remove();
+    canvas.select("lineg").remove();
 
-    var graph = canvas.selectAll("line")
+    var graph = canvas.selectAll("lineg")
         .data(data)
         .enter()
         .append("line")
@@ -175,7 +218,7 @@ function makeGraph(district, block, from, to, dataType) {
         else return 0;
     })
         .attr("stroke", "#90c6ee")
-        .attr("stroke-width", 3)
+        .attr("stroke-width" ,"3")
         .attr("id", "lineg");
 
     //DISPLAY DISTRICT,BLOCK
@@ -235,12 +278,12 @@ function makeGraph(district, block, from, to, dataType) {
     };
 
     var heightScaleFunction = function (i) {
-        return (30 / 13 * i * heightScale);
+        return (300 / 13 * i );
     };
 
     //GENERATE GUIDES
 
-    for (i = 0; i < 13; i++)
+    for (i = 0; i < 14; i++)
     canvas.append("line")
         .attr("x1", 30)
         .attr("y1", heightScaleFunction(i))
