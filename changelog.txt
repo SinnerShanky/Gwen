@@ -1,5 +1,5 @@
-Removed useless frame
-Added Year indicator
-Removed useless Semantic UI (Thank God!)
-Added dropdown menus (Not as easy as it sounds)
-Refactored code
+Added ALL blocks
+Varying canvas size
+Various Bug Fixes
+Dynamic Guides
+UI Change
