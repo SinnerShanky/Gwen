@@ -8,8 +8,10 @@ var obj = {},
     yearIndex = 0,
     total,
     map;
+
 var mapOptions = {
         zoom: 8,
+        center: new google.maps.LatLng("30.7300","76.7800"),
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 var latLongList=[],
@@ -116,6 +118,7 @@ function makeGraph(district, block, from, to, dataType) {
     villageLatLongList = [];
     markers = [];
     initialize();
+    google.maps.event.trigger(map, "resize");
 
     var dataParser = function() {
         parsingData.forEach(function (v) {
@@ -284,7 +287,7 @@ function makeGraph(district, block, from, to, dataType) {
                     title: villageNames[i]
             })
         );
-        console.log(i);
+        //console.log(i);
     }
 
     //ANIMATION FUNCTION
