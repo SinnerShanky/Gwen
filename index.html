@@ -5,10 +5,11 @@
 		<title>
 			Water Level Simulator
 		</title>
-
+		<script src = "https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 		<script src = "js/d3.v3.min.js"></script>
 		<script src = "js/jquery.min.js"></script>
 		<script src = "js/graph.js"></script>
+
 		<script>
 		var district = "",
 			block = "",
@@ -59,6 +60,7 @@
 
 	<body onload="yearFunc()">
 
+<div id = "selection">
 	<label class="label">Select District: &nbsp;&nbsp;</label>
 	<select id = "dd_district" onchange="populateBlock()" width = "50px" class="dropdown">
 		<option selected = "true">----SELECT----</option>
@@ -88,7 +90,11 @@
 		<br><br><br>
 
 		<a type="submit" onclick="callFunc()" value = "Plot Graph" class = "button" align="center" id="plot">Plot Graph</a>
-		
+</div>		
+
+<div id = "map-canvas">
+</div>
+
 		<br><br><br>
 		<div id = "details">
 			<br>
