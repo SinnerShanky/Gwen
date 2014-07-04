@@ -229,7 +229,7 @@ function makeGraph(district, block, from, to, dataType) {
 
     canvas.append("text")
         .text("DEPTH")
-        .attr("transform","rotate(-90) translate(-180,0)");
+        .attr("transform","rotate(-90) translate(0,10)");
 
     var depthNames = [];
 
